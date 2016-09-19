@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <preConditions>
+        <dbms type="postgresql"/>
+    </preConditions>
+
+
+    <changeSet id="1.0" author="Vladimir Malinovskiy">
+        <createTable tableName="places">
+            <column name="id" type="serial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="character varying(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="character varying(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="character varying(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="character varying(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone" type="character varying(255)">
+                <constraints nullable="false"
+                             unique="true"
+                             uniqueConstraintName="place_phone_uc"/>
+            </column>
+            <column name="alias" type="character varying(60)">
+                <constraints nullable="false"
+                             unique="true"
+                             uniqueConstraintName="place_alias_uc"/>
+            </column>
+            <column name="description" type="character varying(500)"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="places"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="1.1" author="Vladimir Malinovskiy">
+        <loadData encoding="UTF-8"
+                  file="data/places.csv"
+                  tableName="places"/>
+        <createSequence
+                sequenceName="places_places_id_seq"
+                startValue="1"/>
+        <addDefaultValue
+                columnName="id"
+                defaultValueSequenceNext="places_places_id_seq"
+                tableName="places"/>
+    </changeSet>
+
+</databaseChangeLog>
